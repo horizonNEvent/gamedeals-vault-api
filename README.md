@@ -6,14 +6,55 @@ Este projeto compoe o **Modulo Back-End (API Secundaria)** do MVP da PUC Minas p
 
 ---
 
-## Sumario
+## Arquitetura do Sistema (Cenário 1 — MVC)
+
+Conforme estabelecido nos requisitos do edital, a solução implementa a arquitetura de módulos baseada no **Cenário 1**, sumarizando todos os componentes utilizados:
+
+![Arquitetura da Aplicação](./architecture.png)
+
+```mermaid
+flowchart LR
+    subgraph Cliente["Cliente"]
+        Browser["🌐 Browser do Usuário<br/>(Desktop / Mobile)"]
+    end
+
+    subgraph FrontEnd["Componente 1: Interface (Front-End)"]
+        React["⚛️ React 18 + Vite<br/>(Nginx Alpine :3000)"]
+    end
+
+    subgraph BackEnd["Componente 2: API Back-End (FastAPI)"]
+        Routes["🛣️ Routes<br/>(app/routes/games.py)"]
+        Controller["⚙️ Controller / Services<br/>(cheapshark.py & currency.py)"]
+        Model["📦 Model / Schemas<br/>(SQLAlchemy & Pydantic)"]
+        DB[("💾 SQLite<br/>(gamedeals.db)")]
+        
+        Routes -->|Encaminha request| Controller
+        Controller -->|Leitura / Escrita| Model
+        Model <--> DB
+    end
+
+    subgraph Externas["Serviços Externos Públicos"]
+        CheapShark["🎮 CheapShark API<br/>(Ofertas PC /deals)"]
+        AwesomeAPI["💵 AwesomeAPI<br/>(Cotação USD/BRL)"]
+    end
+
+    Browser <-->|Interação Web| React
+    React <-->|HTTP REST JSON<br/>GET, POST, PUT, DELETE| Routes
+    Controller <-->|Async HTTP /deals| CheapShark
+    Controller <-->|Async HTTP /last/USD-BRL| AwesomeAPI
+```
+
+---
+
+## Sumário
+- [Arquitetura do Sistema (Cenário 1 — MVC)](#arquitetura-do-sistema-cenário-1--mvc)
 - [Recursos Principais](#recursos-principais)
 - [Tecnologias Utilizadas](#tecnologias-utilizadas)
-- [Integracao com APIs Externas (CheapShark e AwesomeAPI)](#integracao-com-apis-externas-cheapshark-e-awesomeapi)
+- [Integração com APIs Externas (CheapShark e AwesomeAPI)](#integracao-com-apis-externas-cheapshark-e-awesomeapi)
 - [Estrutura de Pastas](#estrutura-de-pastas)
 - [Como Executar Localmente](#como-executar-localmente)
 - [Como Executar via Docker](#como-executar-via-docker)
-- [Documentacao das Rotas (Swagger)](#documentacao-das-rotas-swagger)
+- [Documentação das Rotas (Swagger)](#documentacao-das-rotas-swagger)
 
 ---
 
